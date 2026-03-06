@@ -1,5 +1,6 @@
 package com.induce.profitability_calculation_service.controller;
 
+import com.induce.profitability_calculation_service.dto.AuthenticationRequest;
 import com.induce.profitability_calculation_service.dto.AuthenticationResponse;
 import com.induce.profitability_calculation_service.dto.RegisterRequest;
 import com.induce.profitability_calculation_service.service.AuthenticationService;
@@ -26,7 +27,7 @@ public class AuthenticationController {
 
     @PostMapping("/authenticate")
     public ResponseEntity<AuthenticationResponse> authenticate(
-            @RequestBody RegisterRequest request
+            @RequestBody AuthenticationRequest request
     ) {
         return ResponseEntity.ok(service.authenticate(request));
     }

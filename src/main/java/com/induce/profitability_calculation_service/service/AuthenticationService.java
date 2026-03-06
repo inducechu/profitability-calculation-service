@@ -1,5 +1,6 @@
 package com.induce.profitability_calculation_service.service;
 
+import com.induce.profitability_calculation_service.dto.AuthenticationRequest;
 import com.induce.profitability_calculation_service.dto.AuthenticationResponse;
 import com.induce.profitability_calculation_service.dto.RegisterRequest;
 import com.induce.profitability_calculation_service.exception.UserAlreadyExistsException;
@@ -26,6 +27,8 @@ public class AuthenticationService {
                 throw new UserAlreadyExistsException("Пользователь с таким email уже существует!");
         }
         var user = User.builder()
+                .firstname(request.getFirstname())
+                .lastname(request.getLastname())
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
                 .role(Role.USER)
@@ -37,7 +40,7 @@ public class AuthenticationService {
                 .build();
     }
 
-    public AuthenticationResponse authenticate(RegisterRequest request) {
+    public AuthenticationResponse authenticate(AuthenticationRequest request) {
         authenticationManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         request.getEmail(),
