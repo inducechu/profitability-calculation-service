@@ -4,6 +4,8 @@ import com.induce.profitability_calculation_service.dto.AuthenticationRequest;
 import com.induce.profitability_calculation_service.dto.AuthenticationResponse;
 import com.induce.profitability_calculation_service.dto.RegisterRequest;
 import com.induce.profitability_calculation_service.service.AuthenticationService;
+
+import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -20,7 +22,7 @@ public class AuthenticationController {
 
     @PostMapping("/register")
     public ResponseEntity<AuthenticationResponse> register(
-            @RequestBody RegisterRequest request
+        @Valid @RequestBody RegisterRequest request
     ) {
         return ResponseEntity.ok(service.register(request));
     }
