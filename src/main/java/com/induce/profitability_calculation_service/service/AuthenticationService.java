@@ -2,6 +2,7 @@ package com.induce.profitability_calculation_service.service;
 
 import com.induce.profitability_calculation_service.dto.AuthenticationResponse;
 import com.induce.profitability_calculation_service.dto.RegisterRequest;
+import com.induce.profitability_calculation_service.exception.UserAlreadyExistsException;
 import com.induce.profitability_calculation_service.model.Role;
 import com.induce.profitability_calculation_service.model.User;
 import com.induce.profitability_calculation_service.repository.UserRepository;
@@ -21,6 +22,9 @@ public class AuthenticationService {
     private final AuthenticationManager authenticationManager;
 
     public AuthenticationResponse register(RegisterRequest request) {
+        if(repository.findByEmail(request.getEmail()).isPresent()){
+                throw new UserAlreadyExistsException("Пользователь с таким email уже существует!");
+        }
         var user = User.builder()
                 .email(request.getEmail())
                 .password(passwordEncoder.encode(request.getPassword()))
