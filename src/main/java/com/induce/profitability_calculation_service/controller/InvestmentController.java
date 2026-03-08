@@ -11,9 +11,12 @@ import com.induce.profitability_calculation_service.dto.BondRequest;
 import com.induce.profitability_calculation_service.dto.BondResponse;
 import com.induce.profitability_calculation_service.dto.DepositRequest;
 import com.induce.profitability_calculation_service.dto.DepositResponse;
+import com.induce.profitability_calculation_service.dto.StockRequest;
+import com.induce.profitability_calculation_service.dto.StockResponse;
 import com.induce.profitability_calculation_service.model.User;
 import com.induce.profitability_calculation_service.service.BondService;
 import com.induce.profitability_calculation_service.service.DepositService;
+import com.induce.profitability_calculation_service.service.StockService;
 
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ public class InvestmentController {
 
   private final DepositService depositService;
   private final BondService bondService;
+  private final StockService stockService;
 
   @PostMapping("/deposit")
   public ResponseEntity<DepositResponse> calculateDeposit(
@@ -39,4 +43,12 @@ public class InvestmentController {
       @AuthenticationPrincipal User user) {
     return ResponseEntity.ok(bondService.calculateAndSave(request, user));
   }
+
+  @PostMapping("/stock")
+  public ResponseEntity<StockResponse> calculateStock(
+      @Valid @RequestBody StockRequest request,
+      @AuthenticationPrincipal User user) {
+    return ResponseEntity.ok(stockService.calculateAndSave(request, user));
+  }
+
 }
