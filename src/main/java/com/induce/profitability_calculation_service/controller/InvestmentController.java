@@ -7,9 +7,12 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.induce.profitability_calculation_service.dto.BondRequest;
+import com.induce.profitability_calculation_service.dto.BondResponse;
 import com.induce.profitability_calculation_service.dto.DepositRequest;
 import com.induce.profitability_calculation_service.dto.DepositResponse;
 import com.induce.profitability_calculation_service.model.User;
+import com.induce.profitability_calculation_service.service.BondService;
 import com.induce.profitability_calculation_service.service.DepositService;
 
 import jakarta.validation.Valid;
@@ -21,11 +24,19 @@ import lombok.RequiredArgsConstructor;
 public class InvestmentController {
 
   private final DepositService depositService;
+  private final BondService bondService;
 
   @PostMapping("/deposit")
   public ResponseEntity<DepositResponse> calculateDeposit(
       @Valid @RequestBody DepositRequest request,
       @AuthenticationPrincipal User user) {
     return ResponseEntity.ok(depositService.calculateAndSave(request, user));
+  }
+
+  @PostMapping("/bond")
+  public ResponseEntity<BondResponse> calculateBond(
+      @Valid @RequestBody BondRequest request,
+      @AuthenticationPrincipal User user) {
+    return ResponseEntity.ok(bondService.calculateAndSave(request, user));
   }
 }

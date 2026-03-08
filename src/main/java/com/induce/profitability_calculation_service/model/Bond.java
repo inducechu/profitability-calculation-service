@@ -17,38 +17,48 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "deposits")
+@Table(name = "bonds")
 @Data
 @Builder
-@NoArgsConstructor
 @AllArgsConstructor
-public class Deposit {
+@NoArgsConstructor
+public class Bond {
+
   @Id
   @GeneratedValue(strategy = GenerationType.IDENTITY)
-  private long id;
+  private Long id;
 
   // In
   @Column(precision = 19, scale = 2)
-  private BigDecimal amount;
-
-  @Column(precision = 19, scale = 2)
-  private BigDecimal interestRate;
-
-  private Integer termMonths;
-  private Boolean capitalization;
-  private String interval;
-
-  // Out
-  @Column(precision = 19, scale = 2)
-  private BigDecimal finalAmount;
-
-  @Column(precision = 19, scale = 2)
-  private BigDecimal accruedInterest;
+  private BigDecimal nominal;
 
   @Column(precision = 5, scale = 2)
-  private BigDecimal effectiveRate;
+  private BigDecimal purchasePricePercent;
 
-  //Metadata
+  @Column(precision = 5, scale = 2)
+  private BigDecimal couponRate;
+
+  private String couponFrequency;
+
+  private Integer termYears;
+
+  @Column(precision = 5, scale = 2)
+  private BigDecimal taxRate;
+
+  // Out
+  @Column(precision = 5, scale = 2)
+  private BigDecimal ytm;
+
+  @Column(precision = 5, scale = 2)
+  private BigDecimal netYield;
+
+  @Column(precision = 19, scale = 2)
+  private BigDecimal totalProfitAmount;
+
+  @Column(precision = 5, scale = 2)
+  private BigDecimal totalProfitPercent;
+
+  // Metadata
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;
