@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.induce.profitability_calculation_service.dto.BondRequest;
 import com.induce.profitability_calculation_service.dto.BondResponse;
@@ -20,6 +21,7 @@ public class BondService {
 
   private final BondRepository bondRepository;
 
+  @Transactional
   public BondResponse calculateAndSave(BondRequest request, User user) {
     BigDecimal nominal = request.getNominal();
     // Цена покупки в деньгах = Номинал * (Процент / 100)

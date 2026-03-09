@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.induce.profitability_calculation_service.dto.StockRequest;
 import com.induce.profitability_calculation_service.dto.StockResponse;
@@ -20,6 +21,7 @@ public class StockService {
 
   private final StockRepository stockRepository;
 
+  @Transactional
   public StockResponse calculateAndSave(StockRequest request, User user) {
     BigDecimal purchasePrice = request.getPurchasePrice();
     BigDecimal currentPrice = request.getCurrentPrice();

@@ -5,6 +5,7 @@ import java.math.RoundingMode;
 import java.time.LocalDateTime;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import com.induce.profitability_calculation_service.dto.DepositRequest;
 import com.induce.profitability_calculation_service.dto.DepositResponse;
@@ -20,6 +21,7 @@ public class DepositService {
 
   private final DepositRepository depositRepository;
 
+  @Transactional
   public DepositResponse calculateAndSave(DepositRequest request, User user) {
     BigDecimal amount = request.getAmount();
     // Переводим годовую ставку в десятичную дробь (например, 15% -> 0.15)
