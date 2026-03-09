@@ -13,11 +13,10 @@ import com.induce.profitability_calculation_service.dto.DepositRequest;
 import com.induce.profitability_calculation_service.dto.DepositResponse;
 import com.induce.profitability_calculation_service.dto.StockRequest;
 import com.induce.profitability_calculation_service.dto.StockResponse;
+import com.induce.profitability_calculation_service.model.InvestmentType;
 import com.induce.profitability_calculation_service.model.User;
-import com.induce.profitability_calculation_service.service.BondService;
-import com.induce.profitability_calculation_service.service.DepositService;
-import com.induce.profitability_calculation_service.service.StockService;
-
+import com.induce.profitability_calculation_service.service.CalculationFactory;
+import com.induce.profitability_calculation_service.service.CalculationStrategy;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
 
@@ -26,29 +25,37 @@ import lombok.RequiredArgsConstructor;
 @RequiredArgsConstructor
 public class InvestmentController {
 
-  private final DepositService depositService;
-  private final BondService bondService;
-  private final StockService stockService;
+  private final CalculationFactory calculationFactory;
 
   @PostMapping("/deposit")
+  @SuppressWarnings("unchecked")
   public ResponseEntity<DepositResponse> calculateDeposit(
       @Valid @RequestBody DepositRequest request,
       @AuthenticationPrincipal User user) {
-    return ResponseEntity.ok(depositService.calculateAndSave(request, user));
+    CalculationStrategy<DepositRequest, DepositResponse> strategy = (CalculationStrategy<DepositRequest, DepositResponse>) calculationFactory
+        .getStrategy(InvestmentType.DEPOSIT);
+    return ResponseEntity.ok(strategy.calculateAndSave(request, user));
   }
 
   @PostMapping("/bond")
+  @SuppressWarnings("unchecked")
   public ResponseEntity<BondResponse> calculateBond(
       @Valid @RequestBody BondRequest request,
       @AuthenticationPrincipal User user) {
-    return ResponseEntity.ok(bondService.calculateAndSave(request, user));
+    CalculationStrategy<BondRequest, BondResponse> strategy = (CalculationStrategy<BondRequest, BondResponse>) calculationFactory
+        .getStrategy(InvestmentType.BOND);
+    return ResponseEntity.ok(strategy.calculateAndSave(request, user));
   }
 
   @PostMapping("/stock")
+  @SuppressWarnings("unchecked")
   public ResponseEntity<StockResponse> calculateStock(
       @Valid @RequestBody StockRequest request,
       @AuthenticationPrincipal User user) {
-    return ResponseEntity.ok(stockService.calculateAndSave(request, user));
+    CalculationStrategy<StockRequest, StockResponse> strategy = (CalculationStrategy<StockRequest, StockResponse>) calculationFactory
+        .getStrategy(InvestmentType.STOCK);
+
+    return ResponseEntity.ok(strategy.calculateAndSave(request, user));
   }
 
 }

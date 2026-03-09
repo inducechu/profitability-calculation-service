@@ -9,6 +9,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.induce.profitability_calculation_service.dto.StockRequest;
 import com.induce.profitability_calculation_service.dto.StockResponse;
+import com.induce.profitability_calculation_service.model.InvestmentType;
 import com.induce.profitability_calculation_service.model.Stock;
 import com.induce.profitability_calculation_service.model.User;
 import com.induce.profitability_calculation_service.repository.StockRepository;
@@ -17,10 +18,16 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class StockService {
+public class StockService implements CalculationStrategy<StockRequest, StockResponse> {
 
   private final StockRepository stockRepository;
 
+  @Override
+  public InvestmentType getType() {
+    return InvestmentType.STOCK;
+  }
+
+  @Override
   @Transactional
   public StockResponse calculateAndSave(StockRequest request, User user) {
     BigDecimal purchasePrice = request.getPurchasePrice();

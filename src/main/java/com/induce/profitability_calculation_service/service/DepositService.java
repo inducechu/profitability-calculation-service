@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.induce.profitability_calculation_service.dto.DepositRequest;
 import com.induce.profitability_calculation_service.dto.DepositResponse;
 import com.induce.profitability_calculation_service.model.Deposit;
+import com.induce.profitability_calculation_service.model.InvestmentType;
 import com.induce.profitability_calculation_service.model.User;
 import com.induce.profitability_calculation_service.repository.DepositRepository;
 
@@ -17,10 +18,16 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class DepositService {
+public class DepositService implements CalculationStrategy<DepositRequest, DepositResponse> {
 
   private final DepositRepository depositRepository;
 
+  @Override
+  public InvestmentType getType() {
+    return InvestmentType.DEPOSIT;
+  }
+
+  @Override
   @Transactional
   public DepositResponse calculateAndSave(DepositRequest request, User user) {
     BigDecimal amount = request.getAmount();

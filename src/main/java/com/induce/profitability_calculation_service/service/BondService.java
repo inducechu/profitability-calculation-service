@@ -10,6 +10,7 @@ import org.springframework.transaction.annotation.Transactional;
 import com.induce.profitability_calculation_service.dto.BondRequest;
 import com.induce.profitability_calculation_service.dto.BondResponse;
 import com.induce.profitability_calculation_service.model.Bond;
+import com.induce.profitability_calculation_service.model.InvestmentType;
 import com.induce.profitability_calculation_service.model.User;
 import com.induce.profitability_calculation_service.repository.BondRepository;
 
@@ -17,10 +18,16 @@ import lombok.RequiredArgsConstructor;
 
 @Service
 @RequiredArgsConstructor
-public class BondService {
+public class BondService implements CalculationStrategy<BondRequest, BondResponse> {
 
   private final BondRepository bondRepository;
 
+  @Override
+  public InvestmentType getType() {
+    return InvestmentType.BOND;
+  }
+
+  @Override
   @Transactional
   public BondResponse calculateAndSave(BondRequest request, User user) {
     BigDecimal nominal = request.getNominal();
