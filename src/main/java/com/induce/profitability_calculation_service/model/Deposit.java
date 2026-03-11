@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -36,7 +38,6 @@ public class Deposit {
 
   private Integer termMonths;
   private Boolean capitalization;
-  private String interval;
 
   // Out
   @Column(precision = 19, scale = 2)
@@ -48,7 +49,11 @@ public class Deposit {
   @Column(precision = 5, scale = 2)
   private BigDecimal effectiveRate;
 
-  //Metadata
+  // Metadata
+  @Enumerated(EnumType.STRING)
+  @Column(name = "compounding_frequency", nullable = false)
+  private CompoundingFrequency frequency;
+
   @ManyToOne
   @JoinColumn(name = "user_id")
   private User user;

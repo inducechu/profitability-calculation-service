@@ -2,6 +2,8 @@ package com.induce.profitability_calculation_service.dto;
 
 import java.math.BigDecimal;
 
+import com.induce.profitability_calculation_service.model.CompoundingFrequency;
+
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
 import jakarta.validation.constraints.NotBlank;
@@ -30,6 +32,6 @@ public class DepositRequest {
 
   private boolean capitalization;
 
-  @NotBlank(message = "Compounding interval is required (e.g., MONTHLY, QUARTERLY)")
-  private String interval;
+  @NotNull(message = "Compounding frequency is required")
+    private CompoundingFrequency frequency;
 }

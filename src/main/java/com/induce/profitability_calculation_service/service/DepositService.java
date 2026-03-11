@@ -3,6 +3,8 @@ package com.induce.profitability_calculation_service.service;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.time.LocalDateTime;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,30 +32,42 @@ public class DepositService implements CalculationStrategy<DepositRequest, Depos
   @Override
   @Transactional
   public DepositResponse calculateAndSave(DepositRequest request, User user) {
-    BigDecimal amount = request.getAmount();
-    // Переводим годовую ставку в десятичную дробь (например, 15% -> 0.15)
-    BigDecimal annualRate = request.getInterestRate().divide(BigDecimal.valueOf(100), 10, RoundingMode.HALF_UP);
-    int months = request.getTermMonths();
+    BigDecimal initialAmount = request.getAmount();
+    int totalMonths = request.getTermMonths();
+    int compoundStep = request.getFrequency().getMonths();
 
-    BigDecimal finalAmount;
+    // Месячная простая ставка: (r / 100) / 12
+    BigDecimal monthlyRate = request.getInterestRate()
+        .divide(BigDecimal.valueOf(1200), 10, RoundingMode.HALF_UP);
 
-    if (request.isCapitalization()) {
-      // Формула сложных процентов (ежемесячная капитализация): A = P * (1 + r/12)^m
-      BigDecimal monthlyRate = annualRate.divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
-      finalAmount = amount.multiply(monthlyRate.add(BigDecimal.ONE).pow(months))
-          .setScale(2, RoundingMode.HALF_UP);
-    } else {
-      // Простые проценты: A = P * (1 + r * (m/12))
-      BigDecimal termInYears = BigDecimal.valueOf(months).divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
-      finalAmount = amount.add(amount.multiply(annualRate).multiply(termInYears))
-          .setScale(2, RoundingMode.HALF_UP);
+    List<BigDecimal> graph = new ArrayList<>();
+    BigDecimal currentPrincipal = initialAmount;
+    BigDecimal accumulatedInterest = BigDecimal.ZERO;
+
+    for (int month = 1; month <= totalMonths; month++) {
+      // 1. Начисляем проценты за текущий месяц
+      BigDecimal interestForThisMonth = currentPrincipal.multiply(monthlyRate);
+      accumulatedInterest = accumulatedInterest.add(interestForThisMonth);
+
+      // 2. Проверяем условие капитализации
+      if (request.isCapitalization() && month % compoundStep == 0) {
+        currentPrincipal = currentPrincipal.add(accumulatedInterest);
+        accumulatedInterest = BigDecimal.ZERO;
+      }
+
+      // 3. Оптимизация графика: добавляем точку только в конце интервала (шага)
+      // Или если это самый последний месяц вклада
+      if (month % compoundStep == 0 || month == totalMonths) {
+        BigDecimal currentTotal = currentPrincipal.add(accumulatedInterest);
+        graph.add(currentTotal.setScale(2, RoundingMode.HALF_UP));
+      }
     }
 
-    BigDecimal accruedInterest = finalAmount.subtract(amount);
+    BigDecimal finalAmount = currentPrincipal.add(accumulatedInterest).setScale(2, RoundingMode.HALF_UP);
+    BigDecimal accruedInterest = finalAmount.subtract(initialAmount);
 
-    // Считаем эффективную ставку: ((A/P) - 1) / (m/12) * 100
-    BigDecimal termInYears = BigDecimal.valueOf(months).divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
-    BigDecimal effectiveRate = finalAmount.divide(amount, 10, RoundingMode.HALF_UP)
+    BigDecimal termInYears = BigDecimal.valueOf(totalMonths).divide(BigDecimal.valueOf(12), 10, RoundingMode.HALF_UP);
+    BigDecimal effectiveRate = finalAmount.divide(initialAmount, 10, RoundingMode.HALF_UP)
         .subtract(BigDecimal.ONE)
         .divide(termInYears, 10, RoundingMode.HALF_UP)
         .multiply(BigDecimal.valueOf(100))
@@ -61,11 +75,11 @@ public class DepositService implements CalculationStrategy<DepositRequest, Depos
 
     // Сохраняем результат в БД
     Deposit deposit = Deposit.builder()
-        .amount(amount)
+        .amount(initialAmount)
         .interestRate(request.getInterestRate())
-        .termMonths(months)
+        .termMonths(totalMonths)
         .capitalization(request.isCapitalization())
-        .interval(request.getInterval())
+        .frequency(request.getFrequency())
         .finalAmount(finalAmount)
         .accruedInterest(accruedInterest)
         .effectiveRate(effectiveRate)
@@ -79,6 +93,8 @@ public class DepositService implements CalculationStrategy<DepositRequest, Depos
         .finalAmount(finalAmount)
         .accruedInterest(accruedInterest)
         .effectiveRate(effectiveRate)
+        .frequency(request.getFrequency())
+        .capitalGrowthGraph(graph)
         .build();
   }
 }
