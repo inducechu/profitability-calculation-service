@@ -5,6 +5,8 @@ import java.time.LocalDateTime;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.EnumType;
+import jakarta.persistence.Enumerated;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
@@ -38,12 +40,13 @@ public class Bond {
   @Column(precision = 5, scale = 2)
   private BigDecimal couponRate;
 
-  private String couponFrequency;
-
-  private Integer termYears;
+  private Integer termMonths;
 
   @Column(precision = 5, scale = 2)
   private BigDecimal taxRate;
+
+  @Enumerated(EnumType.STRING)
+  private FinancialFrequency frequency;
 
   // Out
   @Column(precision = 5, scale = 2)

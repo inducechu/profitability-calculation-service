@@ -1,6 +1,9 @@
 package com.induce.profitability_calculation_service.dto;
 
 import java.math.BigDecimal;
+import java.util.List;
+
+import com.induce.profitability_calculation_service.model.FinancialFrequency;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -21,5 +24,8 @@ public class BondResponse {
     
     private BigDecimal totalProfitPercent;
     
+    private FinancialFrequency frequency;
+    
+    private List<BigDecimal> couponPaymentsGraph;
 }
 

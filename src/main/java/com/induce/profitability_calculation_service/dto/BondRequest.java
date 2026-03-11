@@ -2,6 +2,8 @@ package com.induce.profitability_calculation_service.dto;
 
 import java.math.BigDecimal;
 
+import com.induce.profitability_calculation_service.model.FinancialFrequency;
+
 import jakarta.validation.constraints.DecimalMax;
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
@@ -31,12 +33,12 @@ public class BondRequest {
   @DecimalMin(value = "0.0", message = "Coupon rate cannot be negative")
   private BigDecimal couponRate;
 
-  @NotBlank(message = "Coupon frequency is required (e.g., MONTHLY, QUARTERLY, ANNUALLY)")
-  private String couponFrequency;
+  @NotNull(message = "Frequency is required")
+    private FinancialFrequency frequency;
 
-  @NotNull(message = "Term in years is required")
-  @Min(value = 1, message = "Term must be at least 1 year")
-  private Integer termYears;
+    @NotNull(message = "Term in months is required")
+    @Min(1)
+    private Integer termMonths;
 
   @NotNull(message = "Tax rate is required")
   @DecimalMin(value = "0.0", message = "Tax rate cannot be negative")
