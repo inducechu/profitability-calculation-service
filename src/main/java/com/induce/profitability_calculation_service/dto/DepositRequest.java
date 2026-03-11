@@ -2,11 +2,10 @@ package com.induce.profitability_calculation_service.dto;
 
 import java.math.BigDecimal;
 
-import com.induce.profitability_calculation_service.model.CompoundingFrequency;
+import com.induce.profitability_calculation_service.model.FinancialFrequency;
 
 import jakarta.validation.constraints.DecimalMin;
 import jakarta.validation.constraints.Min;
-import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -33,5 +32,5 @@ public class DepositRequest {
   private boolean capitalization;
 
   @NotNull(message = "Compounding frequency is required")
-    private CompoundingFrequency frequency;
+    private FinancialFrequency frequency;
 }

@@ -52,7 +52,7 @@ public class Deposit {
   // Metadata
   @Enumerated(EnumType.STRING)
   @Column(name = "compounding_frequency", nullable = false)
-  private CompoundingFrequency frequency;
+  private FinancialFrequency frequency;
 
   @ManyToOne
   @JoinColumn(name = "user_id")

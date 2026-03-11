@@ -5,7 +5,7 @@ import lombok.RequiredArgsConstructor;
 
 @Getter
 @RequiredArgsConstructor
-public enum CompoundingFrequency {
+public enum FinancialFrequency {
     MONTHLY(1),
     QUARTERLY(3),
     SEMI_ANNUALLY(6),

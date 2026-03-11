@@ -3,7 +3,7 @@ package com.induce.profitability_calculation_service.dto;
 import java.math.BigDecimal;
 import java.util.List;
 
-import com.induce.profitability_calculation_service.model.CompoundingFrequency;
+import com.induce.profitability_calculation_service.model.FinancialFrequency;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -18,6 +18,6 @@ public class DepositResponse {
   private BigDecimal finalAmount;
   private BigDecimal accruedInterest;
   private BigDecimal effectiveRate;
-  private CompoundingFrequency frequency;
+  private FinancialFrequency frequency;
   private List<BigDecimal> capitalGrowthGraph;
 }
